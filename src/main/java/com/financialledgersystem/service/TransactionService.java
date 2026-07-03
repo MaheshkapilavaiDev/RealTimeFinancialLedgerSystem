@@ -136,6 +136,7 @@ public class TransactionService {
         transaction.setAmount(amount);
         transaction.setDescription(description);
         transaction.setCreatedAt(LocalDateTime.now());
+        transaction.setBalanceAfterTransaction(account.getBalance());
 
         return transactionRepository.save(transaction);
     }
@@ -242,8 +243,7 @@ public class TransactionService {
     	// ⚠️ This is CURRENT account balance
 
     	response.setCurrentBalance(
-
-    	transaction.getAccount().getBalance());
+    	        transaction.getBalanceAfterTransaction());
 
     	return response;
 

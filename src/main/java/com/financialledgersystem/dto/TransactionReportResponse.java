@@ -25,14 +25,6 @@ public class TransactionReportResponse {
 		this.currentBalance = currentBalance;
 	}
 
-	public BigDecimal getAccountamount() {
-		return currentBalance;
-	}
-
-	public void setAccountamount(BigDecimal currentBalance) {
-		this.currentBalance = currentBalance;
-	}
-
 	public TransactionReportResponse() {
 	}
 

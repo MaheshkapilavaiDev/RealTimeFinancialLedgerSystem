@@ -30,6 +30,9 @@ public class Transaction {
 	private BigDecimal amount;
 
 	private String description;
+	
+	private BigDecimal balanceAfterTransaction;
+
 
 	private LocalDateTime createdAt;
 
@@ -47,6 +50,21 @@ public class Transaction {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+	public LedgerAccount getLedgerAccount() {
+		return ledgerAccount;
+	}
+	
+	public void setLedgerAccount(LedgerAccount ledgerAccount) {
+		this.ledgerAccount = ledgerAccount;
+	}
+
+	public BigDecimal getBalanceAfterTransaction() {
+		return balanceAfterTransaction;
+	}
+
+	public void setBalanceAfterTransaction(BigDecimal balanceAfterTransaction) {
+		this.balanceAfterTransaction = balanceAfterTransaction;
 	}
 
 	public String getTransactionId() {

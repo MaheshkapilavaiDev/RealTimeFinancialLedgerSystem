@@ -23,9 +23,7 @@ public class ReportService {
     @Autowired
     private LedgerAccountRepository ledgerAccountRepository;
 
-    /**
-     * Account Statement
-     */
+    
     public List<TransactionReportResponse> getAccountStatement(Long accountId) {
 
         ledgerAccountRepository.findById(accountId)
@@ -40,9 +38,7 @@ public class ReportService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Credit Transactions
-     */
+    
     public List<TransactionReportResponse> getCreditTransactions() {
 
         List<Transaction> transactions =
@@ -53,9 +49,7 @@ public class ReportService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Debit Transactions
-     */
+    
     public List<TransactionReportResponse> getDebitTransactions() {
 
         List<Transaction> transactions =
@@ -66,9 +60,7 @@ public class ReportService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Transactions Between Dates
-     */
+    
     public List<TransactionReportResponse> getTransactionsBetween(
             LocalDateTime from,
             LocalDateTime to) {
@@ -81,9 +73,7 @@ public class ReportService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Entity -> DTO Mapping
-     */
+    
     private TransactionReportResponse mapToResponse(Transaction transaction) {
 
         TransactionReportResponse response =
@@ -93,7 +83,7 @@ public class ReportService {
 
         response.setTransactionType(transaction.getTransactionType());
 
-        response.setAccountamount(transaction.getAmount());
+       // response.setAccountamount(transaction.getAmount());
 
         response.setTransactionDate(transaction.getCreatedAt());
 
@@ -106,9 +96,8 @@ public class ReportService {
         response.setAccountNumber(
                 transaction.getAccount().getAccountNumber());
 
-        response.setAccountamount(
-                transaction.getAccount().getBalance());
-
+        response.setCurrentBalance(transaction.getAccount().getBalance());
+       
         return response;
     }
 
