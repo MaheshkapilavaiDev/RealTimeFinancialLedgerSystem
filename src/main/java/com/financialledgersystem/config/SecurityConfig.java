@@ -46,10 +46,18 @@ public class SecurityConfig {
 
 					    .requestMatchers(HttpMethod.GET,"/api/accounts/**")
 					    .authenticated()
+					    
+					    .requestMatchers(HttpMethod.POST, "/api/transactions/credit")
+					    .hasAnyRole("ADMIN","ACCOUNTANT")
 
+					    .requestMatchers(HttpMethod.POST, "/api/transactions/debit")
+					    .hasAnyRole("ADMIN","ACCOUNTANT")
+
+					    .requestMatchers(HttpMethod.POST, "/api/transactions/transfer")
+					    .hasRole("ADMIN")
+					    
 					    .anyRequest()
 					    .authenticated()
-					    
 					    )
 					
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

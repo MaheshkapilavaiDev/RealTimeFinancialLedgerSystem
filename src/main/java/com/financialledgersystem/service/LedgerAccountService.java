@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.financialledgersystem.audit.Audit;
 import com.financialledgersystem.dto.LedgerAccountRequest;
 import com.financialledgersystem.dto.LedgerAccountResponse;
 import com.financialledgersystem.entity.LedgerAccount;
@@ -17,6 +18,7 @@ public class LedgerAccountService {
 	@Autowired
 	private LedgerAccountRepository repository;
 
+	@Audit(operation = "CREATE ACCOUNT")
 	public LedgerAccountResponse createAccount(LedgerAccountRequest request) {
 
 		if (repository.existsByAccountNumber(request.getAccountNumber())) {

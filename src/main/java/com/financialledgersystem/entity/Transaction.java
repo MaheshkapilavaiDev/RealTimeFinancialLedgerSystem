@@ -3,8 +3,9 @@ package com.financialledgersystem.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.financialledgersystem.enums.TransactionType;
+
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
 @Table(name = "transactions")
@@ -15,22 +16,30 @@ public class Transaction {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(unique = true)
-	private String transactionReference;
-
-	private String transactionType;
-
-	private BigDecimal amount;
-
-	private String description;
-
-	private String status;
-
-	private LocalDateTime transactionDate;
+	@Column(unique = true, nullable = false)
+	private String transactionId;
 
 	@ManyToOne
 	@JoinColumn(name = "account_id")
 	private LedgerAccount ledgerAccount;
+
+	@Enumerated(EnumType.STRING)
+	private TransactionType transactionType;
+
+	@Column(nullable = false)
+	private BigDecimal amount;
+
+	private String description;
+
+	private LocalDateTime createdAt;
+
+	@PrePersist
+	public void prePersist() {
+		createdAt = LocalDateTime.now();
+	}
+
+	public Transaction() {
+	}
 
 	public Long getId() {
 		return id;
@@ -40,19 +49,27 @@ public class Transaction {
 		this.id = id;
 	}
 
-	public String getTransactionReference() {
-		return transactionReference;
+	public String getTransactionId() {
+		return transactionId;
 	}
 
-	public void setTransactionReference(String transactionReference) {
-		this.transactionReference = transactionReference;
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
 	}
 
-	public String getTransactionType() {
+	public LedgerAccount getAccount() {
+		return ledgerAccount;
+	}
+
+	public void setAccount(LedgerAccount account) {
+		this.ledgerAccount = account;
+	}
+
+	public TransactionType getTransactionType() {
 		return transactionType;
 	}
 
-	public void setTransactionType(String transactionType) {
+	public void setTransactionType(TransactionType transactionType) {
 		this.transactionType = transactionType;
 	}
 
@@ -72,29 +89,12 @@ public class Transaction {
 		this.description = description;
 	}
 
-	public String getStatus() {
-		return status;
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
-
-	public LocalDateTime getTransactionDate() {
-		return transactionDate;
-	}
-
-	public void setTransactionDate(LocalDateTime transactionDate) {
-		this.transactionDate = transactionDate;
-	}
-
-	public LedgerAccount getLedgerAccount() {
-		return ledgerAccount;
-	}
-
-	public void setLedgerAccount(LedgerAccount ledgerAccount) {
-		this.ledgerAccount = ledgerAccount;
-	}
-	
-	
+ 
 }

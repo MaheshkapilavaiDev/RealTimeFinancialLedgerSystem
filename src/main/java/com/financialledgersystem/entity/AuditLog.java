@@ -8,78 +8,70 @@ import jakarta.persistence.*;
 @Table(name = "audit_logs")
 public class AuditLog {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	private String action;
+    private String username;
 
-	private String username;
+    private String operation;
 
-	private String ipAddress;
+    private String status;
 
-	private String status;
+    @Column(length = 500)
+    private String description;
 
-	private LocalDateTime actionTime;
+    private LocalDateTime timestamp;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
+    public AuditLog() {
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getAction() {
-		return action;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void setAction(String action) {
-		this.action = action;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public String getOperation() {
+        return operation;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
 
-	public String getIpAddress() {
-		return ipAddress;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public void setIpAddress(String ipAddress) {
-		this.ipAddress = ipAddress;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public String getStatus() {
-		return status;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public LocalDateTime getActionTime() {
-		return actionTime;
-	}
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
 
-	public void setActionTime(LocalDateTime actionTime) {
-		this.actionTime = actionTime;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 
 }
