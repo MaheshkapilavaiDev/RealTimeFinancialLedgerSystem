@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.financialledgersystem.audit.Audit;
 import com.financialledgersystem.dto.CreditRequest;
 import com.financialledgersystem.dto.DebitRequest;
+import com.financialledgersystem.dto.TransactionEvent;
 import com.financialledgersystem.dto.TransactionReportResponse;
 import com.financialledgersystem.dto.TransactionResponse;
 import com.financialledgersystem.dto.TransferRequest;
@@ -29,6 +30,9 @@ public class TransactionService {
 
     @Autowired
     private TransactionRepository transactionRepository;
+    
+    @Autowired
+    private KafkaProducerService producer;
 
     
     @Transactional
@@ -48,6 +52,8 @@ public class TransactionService {
                 TransactionType.CREDIT,
                 request.getAmount(),
                 request.getDescription());
+        
+        publishTransactionEvent(transaction, account);
 
         return mapToResponse(transaction, account);
     }
@@ -73,6 +79,8 @@ public class TransactionService {
                 TransactionType.DEBIT,
                 request.getAmount(),
                 request.getDescription());
+
+         publishTransactionEvent(transaction, account);
 
         return mapToResponse(transaction, account);
     }
@@ -105,17 +113,21 @@ public class TransactionService {
         accountRepository.save(fromAccount);
         accountRepository.save(toAccount);
 
-        saveTransaction(
+        Transaction debitTransaction = saveTransaction(
                 fromAccount,
                 TransactionType.TRANSFER,
                 request.getAmount(),
                 "Transferred To " + toAccount.getAccountNumber());
 
-        saveTransaction(
+        Transaction creditTransaction = saveTransaction(
                 toAccount,
                 TransactionType.TRANSFER,
                 request.getAmount(),
                 "Received From " + fromAccount.getAccountNumber());
+
+        publishTransactionEvent(debitTransaction, fromAccount);
+
+        publishTransactionEvent(creditTransaction, toAccount);
 
         return "Fund Transfer Successful";
     }
@@ -160,9 +172,9 @@ public class TransactionService {
         return response;
     }
 
-    /*
-     * UNIQUE TRANSACTION ID
-     */
+    
+     //UNIQUE TRANSACTION ID
+     
     private String generateTransactionId() {
 
         return "TXN-" +
@@ -222,7 +234,7 @@ public class TransactionService {
 
     	response.setTransactionType(transaction.getTransactionType());
 
-    	// ✅ Set transaction amount
+    	// Set transaction amount
 
     	response.setAmount(transaction.getAmount());
 
@@ -240,13 +252,23 @@ public class TransactionService {
 
     	transaction.getAccount().getId());
 
-    	// ⚠️ This is CURRENT account balance
-
     	response.setCurrentBalance(
     	        transaction.getBalanceAfterTransaction());
 
     	return response;
 
     	}
+
+		private void publishTransactionEvent(Transaction transaction, LedgerAccount account) {
+
+			TransactionEvent event = new TransactionEvent();
+
+			event.setTransactionId(transaction.getTransactionId());
+			event.setAccountNumber(account.getAccountNumber());
+			event.setTransactionType(transaction.getTransactionType().name());
+			event.setAmount(transaction.getAmount());
+
+			producer.publish(event);
+}
 
 }

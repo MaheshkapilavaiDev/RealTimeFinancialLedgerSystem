@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.financialledgersystem.audit.Audit;
@@ -45,7 +47,10 @@ public class LedgerAccountService {
 
 	}
 
+	@Cacheable(value = "accounts", key = "#id")
 	public LedgerAccountResponse getAccount(Long id) {
+
+		 System.out.println("Fetching From Database...");
 
 		LedgerAccount account = repository.findById(id).orElseThrow(() -> new RuntimeException(""));
 
@@ -53,6 +58,7 @@ public class LedgerAccountService {
 				account.getBalance());
 	}
 
+	@CacheEvict(value = "accounts", key = "#id")
 	public String deleteAccount(Long id) {
 
 		LedgerAccount account = repository.findById(id).orElseThrow(() -> new RuntimeException("Account Not Found"));
